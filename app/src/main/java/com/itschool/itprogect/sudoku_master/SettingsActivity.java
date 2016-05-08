@@ -24,20 +24,28 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        image=(ImageView)findViewById(R.id.imageView2);
-        Uri uri=MainActivity.uri;
-        image.setImageURI(uri);
-        bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-        Transformation transformation=new Transformation();
-        if (bitmap.getWidth()>displaymetrics.widthPixels/2 && bitmap.getHeight()>displaymetrics.heightPixels/2){
-            bitmap=transformation.getResizedBitmap(bitmap, displaymetrics.widthPixels/2, displaymetrics.heightPixels/2);
+        image = (ImageView) findViewById(R.id.imageView2);
+        try {
+            Uri uri = MainActivity.uri;
+            image.setImageURI(uri);
+            bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+            DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+            Transformation transformation = new Transformation();
+            if (bitmap.getWidth() > displaymetrics.widthPixels / 2 && bitmap.getHeight() > displaymetrics.heightPixels / 2) {
+                bitmap = transformation.getResizedBitmap(bitmap, displaymetrics.widthPixels / 2, displaymetrics.heightPixels / 2);
+            }
+            bitmap = transformation.transform(bitmap);
+            image.setImageBitmap(bitmap);
+            if (bitmap.getHeight() != bitmap.getWidth()) {
+                Toast.makeText(this, getString(R.string.gridError), Toast.LENGTH_LONG).show();
+                image.setImageResource(android.R.drawable.ic_menu_gallery);
+                bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+            }
         }
-        bitmap=transformation.transform(bitmap);
-        image.setImageBitmap(bitmap);
-        if (bitmap.getHeight()!=bitmap.getWidth()){
+        catch(Exception e){
             Toast.makeText(this, getString(R.string.gridError), Toast.LENGTH_LONG).show();
             image.setImageResource(android.R.drawable.ic_menu_gallery);
+            bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
         }
     }
 
