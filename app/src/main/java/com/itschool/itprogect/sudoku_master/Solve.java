@@ -14,7 +14,7 @@ public class Solve {
             for (int j=0; j<size; j++){
                 if (matrix[i][j]!=0) {
                     if (!legal(i, j, matrix[i][j], matrix)) {
-                        error(context);
+                        if (hasSolution) error(context);
                         hasSolution=false;
                     }
                 }
