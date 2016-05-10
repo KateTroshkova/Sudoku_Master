@@ -41,6 +41,17 @@ public class Transformation {
         return bitmap;
     }
 
+    public boolean isEmpty(Bitmap bitmap){
+        Mat mat=new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC1);
+        Utils.bitmapToMat(bitmap, mat);
+        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2GRAY);
+        MatOfPoint contour=findBiggestContour(mat);
+        if (contour==null || contour.rows()<mat.rows()/2){
+            return true;
+        }
+        return false;
+    }
+
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -78,25 +89,29 @@ public class Transformation {
     }
 
     private MatOfPoint findBiggestContour(Mat mat){
-        //список матриц размером n:1. каждая найденный белый контур
-        List<MatOfPoint> contour=new ArrayList<MatOfPoint>();
-        //поиск контуров. Контуром считается непрерывная последовательность белых пикселей.
-        Imgproc.findContours(mat.clone(), contour, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        //длина максимального контура
-        double max=Imgproc.contourArea(contour.get(0));
-        //номер максимального контура
-        int index=0;
-        //получает длину каждого контура и ищет максимальный
-        for(int i=0;i<contour.size();i++)
-        {
-            if(max<Imgproc.contourArea(contour.get(i)))
-            {
-                max=Imgproc.contourArea(contour.get(i));
-                index=i;
+        try {
+            //список матриц размером n:1. каждая найденный белый контур
+            List<MatOfPoint> contour = new ArrayList<MatOfPoint>();
+            //поиск контуров. Контуром считается непрерывная последовательность белых пикселей.
+            Imgproc.findContours(mat.clone(), contour, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            //длина максимального контура
+            double max = Imgproc.contourArea(contour.get(0));
+            //номер максимального контура
+            int index = 0;
+            //получает длину каждого контура и ищет максимальный
+            for (int i = 0; i < contour.size(); i++) {
+                if (max < Imgproc.contourArea(contour.get(i))) {
+                    max = Imgproc.contourArea(contour.get(i));
+                    index = i;
+                }
             }
+            //максимальный контур-сетка судоку.
+            return contour.get(index);
         }
-        //максимальный контур-сетка судоку.
-        return contour.get(index);
+        catch(Exception e){
+            //изображение пустое
+        }
+        return null;
     }
 
     private MatOfPoint2f aproxPolygon(MatOfPoint contour) {

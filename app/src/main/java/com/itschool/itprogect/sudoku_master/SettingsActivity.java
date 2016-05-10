@@ -109,10 +109,19 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            Bitmap b=Bitmap.createBitmap(bitmap, x+5, y+5, bitmap.getWidth()/9-5, bitmap.getHeight()/9-5, null, false);
-            TessOCR tess=new TessOCR(SettingsActivity.this);
-            String digit=tess.translate(b);
-            return digit;
+            //Bitmap b=Bitmap.createBitmap(bitmap, x+5, y+5, bitmap.getWidth()/9-5, bitmap.getHeight()/9-5, null, false);
+            Bitmap b=Bitmap.createBitmap(bitmap, x+3, y+3, bitmap.getWidth()/9-3, bitmap.getHeight()/9-3, null, false);
+            Transformation t=new Transformation();
+            if (!t.isEmpty(b)) {
+                TessOCR tess=new TessOCR(SettingsActivity.this);
+                String digit=tess.translate(b);
+                return digit;
+                //return "d";
+            }
+            return "";
+           // TessOCR tess=new TessOCR(SettingsActivity.this);
+            //String digit=tess.translate(b);
+            //return digit;
         }
 
         @Override
