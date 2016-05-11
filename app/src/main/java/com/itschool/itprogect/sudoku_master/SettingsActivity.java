@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
             else{
                 WhiteGrid grid=(WhiteGrid)findViewById(R.id.whiteGrid);
                 grid.setWidth(bitmap.getWidth()/3);
-                grid.setHeight(bitmap.getHeight()/3);
+                grid.setHeight(bitmap.getWidth()/3);
             }
         }
         catch(Exception e){

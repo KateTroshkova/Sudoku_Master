@@ -16,7 +16,7 @@ public class WhiteGrid extends View {
     private int x=0;
     private int y=0;
 
-    public WhiteGrid(Context context) {
+    public WhiteGrid(Context context, Bitmap bitmap) {
         super(context);
     }
 
@@ -39,7 +39,7 @@ public class WhiteGrid extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         Paint paint=new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.RED);
         paint.setStrokeWidth(4);
         canvas.drawLine(x, y, x+width*3, y, paint);
         canvas.drawLine(x, y+height, x+width*3, y+height, paint);
