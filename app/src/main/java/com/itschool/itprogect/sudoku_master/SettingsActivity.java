@@ -6,11 +6,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -40,6 +44,11 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.gridError), Toast.LENGTH_LONG).show();
                 image.setImageResource(android.R.drawable.ic_menu_gallery);
                 bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+            }
+            else{
+                WhiteGrid grid=(WhiteGrid)findViewById(R.id.whiteGrid);
+                grid.setWidth(bitmap.getWidth()/3);
+                grid.setHeight(bitmap.getHeight()/3);
             }
         }
         catch(Exception e){
@@ -109,25 +118,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            //Bitmap b=Bitmap.createBitmap(bitmap, x+5, y+5, bitmap.getWidth()/9-5, bitmap.getHeight()/9-5, null, false);
             Bitmap b=Bitmap.createBitmap(bitmap, x+3, y+3, bitmap.getWidth()/9-3, bitmap.getHeight()/9-3, null, false);
             Transformation t=new Transformation();
             if (!t.isEmpty(b)) {
                 TessOCR tess=new TessOCR(SettingsActivity.this);
                 String digit=tess.translate(b);
                 return digit;
-                //return "d";
             }
             return "";
-           // TessOCR tess=new TessOCR(SettingsActivity.this);
-            //String digit=tess.translate(b);
-            //return digit;
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             MainActivity.field[i][j].setText(result);
+            MainActivity.progress.setProgress(MainActivity.progress.getProgress()+1);
             if (i==8 && j==8){
                 MainActivity.show();
             }

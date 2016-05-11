@@ -1,6 +1,7 @@
 package com.itschool.itprogect.sudoku_master;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,29 +9,38 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public class Grid extends View {
-    public Grid(Context context) {
+public class WhiteGrid extends View {
+
+    private int width;
+    private int height;
+    private int x=0;
+    private int y=0;
+
+    public WhiteGrid(Context context) {
         super(context);
     }
 
-    public Grid(Context context, AttributeSet attrs) {
+    public WhiteGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public Grid(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WhiteGrid(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setWidth(int width){
+        this.width=width;
+    }
+
+    public void setHeight(int height){
+        this.height=height;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-        int x=10;
-        int y=15;
-        int width=(displaymetrics.widthPixels-90)/3;
-        int height=width;
         Paint paint=new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(2);
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(4);
         canvas.drawLine(x, y, x+width*3, y, paint);
         canvas.drawLine(x, y+height, x+width*3, y+height, paint);
         canvas.drawLine(x, y+height*2, x+width*3, y+height*2, paint);

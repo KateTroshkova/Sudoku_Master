@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progress=(ProgressBar)findViewById(R.id.progressBar);
         progress.setVisibility(View.INVISIBLE);
+        progress.setMax(81);
+        progress.setProgress(0);
+        progress.setProgressDrawable(getResources().getDrawable(R.drawable.progresstyle));
         text=(TextView)findViewById(R.id.textView2);
         text.setVisibility(View.INVISIBLE);
         field=new EditText[size][size];
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0; i<size; i++){
             for(int j=0; j<size; j++){
                 field[i][j]=new EditText(this);
-                field[i][j].setTextSize(14);
+                field[i][j].setTextSize(displaymetrics.widthPixels/25-10);
                 field[i][j].setWidth(displaymetrics.widthPixels/9-10);
                 field[i][j].setHeight(displaymetrics.widthPixels/9-10);
                 field[i][j].setX(x);
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clean(View view){
+        progress.setProgress(0);
        for(int i=0; i<size; i++){
            for (int j=0; j<size; j++){
                field[i][j].setText("");
