@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 field[i][j].setTextSize(displaymetrics.widthPixels/25-10);
                 field[i][j].setWidth(displaymetrics.widthPixels/9-10);
                 field[i][j].setHeight(displaymetrics.widthPixels/9-10);
+                field[i][j].setGravity(Gravity.CENTER);
                 field[i][j].setX(x);
                 field[i][j].setY(y);
                 field[i][j].setInputType(InputType.TYPE_CLASS_NUMBER);
