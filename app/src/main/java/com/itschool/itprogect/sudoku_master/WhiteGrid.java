@@ -39,7 +39,7 @@ public class WhiteGrid extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         Paint paint=new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(Color.WHITE);
         paint.setStrokeWidth(4);
         canvas.drawLine(x, y, x+width*3, y, paint);
         canvas.drawLine(x, y+height, x+width*3, y+height, paint);
