@@ -29,6 +29,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         image = (ImageView) findViewById(R.id.imageView2);
+        FrameLayout layout=(FrameLayout)findViewById(R.id.frame);
+        //Grid grid=(Grid)findViewById(R.id.whiteGrid);
+        Grid grid=new Grid(this, Grid.STYLE.STYLE_WHITE);
+        grid.setWidth(0);
+        grid.setHeight(0);
+        layout.addView(grid);
         try {
             Uri uri = MainActivity.uri;
             image.setImageURI(uri);
@@ -46,7 +52,6 @@ public class SettingsActivity extends AppCompatActivity {
                 bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
             }
             else{
-                WhiteGrid grid=(WhiteGrid)findViewById(R.id.whiteGrid);
                 grid.setWidth(bitmap.getWidth()/3);
                 grid.setHeight(bitmap.getWidth()/3);
             }

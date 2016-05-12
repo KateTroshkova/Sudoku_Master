@@ -9,27 +9,58 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 public class Grid extends View {
-    public Grid(Context context) {
+
+    enum STYLE{
+        STYLE_BLACK,
+        STYLE_WHITE
+    }
+
+    private STYLE style=STYLE.STYLE_BLACK;
+
+    private int width;
+    private int height;
+
+    public Grid(Context context, STYLE style) {
         super(context);
+        this.style=style;
+        init();
     }
 
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public Grid(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init(){
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+        width=(displaymetrics.widthPixels-90)/3;
+        height=width;
+    }
+
+    public void setWidth(int width){
+        this.width=width;
+    }
+
+    public void setHeight(int height){
+        this.height=height;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         int x=10;
         int y=15;
-        int width=(displaymetrics.widthPixels-90)/3;
-        int height=width;
         Paint paint=new Paint();
-        paint.setColor(Color.BLACK);
+        if(style==STYLE.STYLE_BLACK) paint.setColor(Color.BLACK);
+        else {
+            paint.setColor(Color.WHITE);
+            x=0;
+            y=0;
+        }
         paint.setStrokeWidth(2);
         canvas.drawLine(x, y, x+width*3, y, paint);
         canvas.drawLine(x, y+height, x+width*3, y+height, paint);
