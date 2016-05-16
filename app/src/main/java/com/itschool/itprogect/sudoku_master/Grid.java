@@ -17,13 +17,14 @@ public class Grid extends View {
 
     private STYLE style=STYLE.STYLE_BLACK;
 
-    private int width;
-    private int height;
+    private int width=0;
+    private int height=0;
 
-    public Grid(Context context, STYLE style) {
+    public Grid(Context context, STYLE style, int width, int height) {
         super(context);
         this.style=style;
-        init();
+        this.width=width;
+        this.height=height;
     }
 
     public Grid(Context context, AttributeSet attrs) {
@@ -40,14 +41,6 @@ public class Grid extends View {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         width=(displaymetrics.widthPixels-90)/3;
         height=width;
-    }
-
-    public void setWidth(int width){
-        this.width=width;
-    }
-
-    public void setHeight(int height){
-        this.height=height;
     }
 
     @Override
