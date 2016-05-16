@@ -182,17 +182,13 @@ public class Transformation {
     private Mat cleanLines(Mat image) {
         Mat mat = image.clone();
         Mat lines = new Mat();
-        //поиск всех прямых линий на изображении
+        //поиск всех прямых линий на изображении, длиной больше 200 и максимальным зазором между пикселями 20
         Imgproc.HoughLinesP(mat, lines, 1, Math.PI / 180, 50, 200, 20);
         //прохождение всех найденных линий и их удаление
         for (int x = 0; x < lines.rows(); x++) {
             double[] vec = lines.get(x, 0);
-            double x1 = vec[0];
-            double y1 = vec[1];
-            double x2 = vec[2];
-            double y2 = vec[3];
-            Point start = new Point(x1, y1);
-            Point end = new Point(x2, y2);
+            Point start = new Point(vec[0], vec[1]);
+            Point end = new Point(vec[2], vec[3]);
             Imgproc.line(mat, start, end, Scalar.all(0), 5);
         }
         return mat;
