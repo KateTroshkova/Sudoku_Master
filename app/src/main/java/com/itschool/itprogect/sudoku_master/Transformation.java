@@ -35,6 +35,7 @@ public class Transformation {
         //матрица с выправленной ориентацией
         Mat wrapped = wrapPerspective(size, orderPoints(polygon), cut);
         Mat result=prepare(wrapped);
+        //матрица без лишних линий разметки
         result=cleanLines(result);
         bitmap=Bitmap.createBitmap(result.cols(), result.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(result, bitmap);
@@ -46,21 +47,18 @@ public class Transformation {
         Utils.bitmapToMat(bitmap, mat);
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2GRAY);
         MatOfPoint contour=findBiggestContour(mat);
-        if (contour==null || contour.rows()<mat.rows()/2){
-            return true;
-        }
-        return false;
+        return (contour==null || contour.rows()<mat.rows()/2);
     }
 
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
+    public Bitmap getResizedBitmap(Bitmap bitmap, int newWidth, int newHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
         float scaleWidth = ((float) newWidth) / width;
         float scaleHeight = ((float) newHeight) / height;
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+        bitmap.recycle();
         return resizedBitmap;
     }
 
@@ -135,11 +133,14 @@ public class Transformation {
     }
 
     private Mat applyMask(Mat mat, MatOfPoint contour) {
+        //выделение контуров
         Mat mask = Mat.zeros(mat.size(), CvType.CV_8UC1);
         ArrayList<MatOfPoint> line=new ArrayList<MatOfPoint>();
         line.add(contour);
+        //выделение контура
         Imgproc.drawContours(mask, line, 0, Scalar.all(255), -1);
         Imgproc.drawContours(mask, line, 0, Scalar.all(0), 2);
+        //обрезание изображения по наибольшему контуру
         Mat dst=new Mat();
         mat.copyTo(dst, mask);
         return dst;
@@ -147,17 +148,18 @@ public class Transformation {
 
     private Mat wrapPerspective(int size, MatOfPoint2f src, Mat mat) {
         try {
+            //размер будущего изображения
             Size reshape = new Size(size, size);
+            //загатовка для результата
             Mat undistorted = new Mat(reshape, CvType.CV_8UC1);
+            //заполнение матрицы контрольными точками. Порядок: верхний левый, верхний правый, нижний левый, нижний правый угол
             MatOfPoint2f d = new MatOfPoint2f();
-            d.fromArray(new Point(0, 0), new Point(0, reshape.width), new Point(reshape.height, 0),
-                    new Point(reshape.width, reshape.height));
+            d.fromArray(new Point(0, 0), new Point(0, reshape.width), new Point(reshape.height, 0), new Point(reshape.width, reshape.height));
+            //исправление перспективы
             Imgproc.warpPerspective(mat, undistorted, Imgproc.getPerspectiveTransform(src, d), reshape);
             return undistorted;
         }
-        catch(Exception e){
-
-        }
+        catch(Exception e){}
         return mat;
     }
 
@@ -180,7 +182,9 @@ public class Transformation {
     private Mat cleanLines(Mat image) {
         Mat mat = image.clone();
         Mat lines = new Mat();
+        //поиск всех прямых линий на изображении
         Imgproc.HoughLinesP(mat, lines, 1, Math.PI / 180, 50, 200, 20);
+        //прохождение всех найденных линий и их удаление
         for (int x = 0; x < lines.rows(); x++) {
             double[] vec = lines.get(x, 0);
             double x1 = vec[0];
@@ -189,9 +193,7 @@ public class Transformation {
             double y2 = vec[3];
             Point start = new Point(x1, y1);
             Point end = new Point(x2, y2);
-
             Imgproc.line(mat, start, end, Scalar.all(0), 5);
-
         }
         return mat;
     }

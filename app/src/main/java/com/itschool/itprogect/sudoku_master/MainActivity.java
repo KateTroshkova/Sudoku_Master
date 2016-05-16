@@ -27,11 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private final int SETTINGS_REQUEST=2;
 
     public static EditText[][] field;
-    private static TextView text;
-    private int[][] sudoku;
     public static ProgressBar progress;
+    private static TextView text;
+
+    private int[][] sudoku;
     private static int size=9;
-    public static Uri uri=Uri.parse(Environment.getExternalStorageDirectory()+"test.jpg");
+    public static Uri uri=Uri.parse(Environment.getExternalStorageDirectory()+"sudoku.jpg");
 
     private BaseLoaderCallback callback=new BaseLoaderCallback(this) {
         @Override
@@ -55,19 +56,72 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progress=(ProgressBar)findViewById(R.id.progressBar);
-        progress.setVisibility(View.INVISIBLE);
-        progress.setMax(81);
-        progress.setProgress(0);
-        progress.setProgressDrawable(getResources().getDrawable(R.drawable.progresstyle));
-        text=(TextView)findViewById(R.id.textView2);
-        text.setVisibility(View.INVISIBLE);
         field=new EditText[size][size];
         sudoku=new int[size][size];
-        init();
+        initProgress();
+        initGrid();
     }
 
-    private void init(){
+    public void galleryClick(View view){
+        Intent intent=new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, GALLERY_REQUEST);
+    }
+
+    public void cameraClick(View view){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(), "sudoku.jpg");
+        uri = Uri.fromFile(file);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, PICTURE_REQUEST);
+    }
+
+    public void solve(View view){
+        for (int i=0; i<size; i++){
+            for (int j=0; j<size; j++){
+                if (field[i][j].getText().toString().length()<1 || field[i][j].getText().toString().equals("0")){
+                    sudoku[i][j]=0;
+                    field[i][j].setTextColor(getResources().getColor(R.color.colorText));
+                }
+                else {
+                    sudoku[i][j] = Integer.parseInt(field[i][j].getText().toString());
+                    field[i][j].setTextColor(getResources().getColor(R.color.colorAccent));
+                }
+
+            }
+        }
+        new Solve(sudoku, this);
+    }
+
+    public void clean(View view){
+        progress.setProgress(0);
+        for(int i=0; i<size; i++){
+            for (int j=0; j<size; j++){
+                field[i][j].setText("");
+                field[i][j].setTextColor(getResources().getColor(R.color.colorText));
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int code, int result, Intent data) {
+        if (result==RESULT_OK) {
+            if (code == PICTURE_REQUEST) {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_REQUEST);
+            }
+            if (code == GALLERY_REQUEST) {
+                uri = data.getData();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_REQUEST);
+            }
+            if (code == SETTINGS_REQUEST) {
+                hide();
+            }
+        }
+    }
+
+    private void initGrid(){
         RelativeLayout back=(RelativeLayout)findViewById(R.id.back);
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         int x=10;
@@ -90,6 +144,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initProgress(){
+        progress=(ProgressBar)findViewById(R.id.progressBar);
+        progress.setVisibility(View.INVISIBLE);
+        progress.setMax(81);
+        progress.setProgress(0);
+        progress.setProgressDrawable(getResources().getDrawable(R.drawable.progresstyle));
+        text=(TextView)findViewById(R.id.textView2);
+        text.setVisibility(View.INVISIBLE);
+    }
+
     public static void hide(){
         progress.setVisibility(View.VISIBLE);
         text.setVisibility(View.VISIBLE);
@@ -106,66 +170,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i<size; i++){
             for (int j=0; j<size; j++){
                 field[i][j].setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    public void click(View view){
-        Intent intent=new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, GALLERY_REQUEST);
-    }
-
-    public void cameraClick(View view){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),
-                "test.jpg");
-        uri = Uri.fromFile(file);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(intent, PICTURE_REQUEST);
-    }
-
-    public void solve(View view){
-        for (int i=0; i<size; i++){
-            for (int j=0; j<size; j++){
-                if (field[i][j].getText().toString().length()<1 || field[i][j].getText().toString().equals("0")){
-                    sudoku[i][j]=0;
-                    field[i][j].setTextColor(getResources().getColor(R.color.colorText));
-                }
-                else {
-                    sudoku[i][j] = Integer.parseInt(field[i][j].getText().toString());
-                    field[i][j].setTextColor(getResources().getColor(R.color.colorAccent));
-                }
-
-            }
-        }
-        Solve solve=new Solve(sudoku, this);
-    }
-
-    public void clean(View view){
-        progress.setProgress(0);
-       for(int i=0; i<size; i++){
-           for (int j=0; j<size; j++){
-               field[i][j].setText("");
-               field[i][j].setTextColor(getResources().getColor(R.color.colorText));
-           }
-       }
-    }
-
-    @Override
-    protected void onActivityResult(int code, int result, Intent data) {
-        if (result==RESULT_OK) {
-            if (code == PICTURE_REQUEST) {
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, SETTINGS_REQUEST);
-            }
-            if (code == GALLERY_REQUEST) {
-                uri = data.getData();
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, SETTINGS_REQUEST);
-            }
-            if (code == SETTINGS_REQUEST) {
-                hide();
             }
         }
     }

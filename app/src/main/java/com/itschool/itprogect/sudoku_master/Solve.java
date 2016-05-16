@@ -12,11 +12,9 @@ public class Solve {
         boolean hasSolution=true;
         for(int i=0; i<size; i++){
             for (int j=0; j<size; j++){
-                if (matrix[i][j]!=0) {
-                    if (!legal(i, j, matrix[i][j], matrix)) {
-                        if (hasSolution) error(context);
-                        hasSolution=false;
-                    }
+                if (matrix[i][j]!=0 && !legal(i, j, matrix[i][j], matrix) && hasSolution) {
+                    error(context);
+                    hasSolution=false;
                 }
             }
         }

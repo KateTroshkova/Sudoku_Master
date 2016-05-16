@@ -78,12 +78,6 @@
             android:src="@android:drawable/ic_menu_gallery"
             android:layout_gravity="left|top" />
 
-        <!--<com.itschool.itprogect.sudoku_master.Grid
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/whiteGrid"
-            android:layout_gravity="left|top"/>-->
-
     </FrameLayout>
 
     <Button
