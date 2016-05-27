@@ -9,5 +9,5 @@
     <string name="title_activity_settings">Sudoku Mastery</string>
     <string name="ok">OK!</string>
     <string name="check">Is it your puzzle?</string>
-    <string name="wait">Wait, please. It can take few minutes</string>
+    <string name="wait">Please wait. It can take a few minutes</string>
 </resources>
